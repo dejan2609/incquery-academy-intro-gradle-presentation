@@ -1,4 +1,80 @@
-task sayHello << {
-    println 'Hello, World!'
+// example 1
+//task sayHello << {
+//    println 'Hello, World!'
+//}
+
+// example 2
+task sayHello {
+    description "Prints out the text 'Hello, World!'"
+    group 'Incquery Academy'
+
+    doLast {
+        println 'Hello, World!'
+    }
+}
+
+// example 3
+task a << { println "Task A" }
+task b(dependsOn: a) << { println "Task B" }
+
+// example 4
+task copyDoc(type: Copy) {
+    from 'src/doc'
+    into 'build/doc'
+}
+
+// example 5
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+sourceSets {
+    main { java { srcDir 'src/java' } }
+    test { java { srcDir 'src/test-java' } }
+}
+
+def builtBy = hasProperty('builtBy') ? property('builtBy') : 'DevMachine'
+
+jar {
+    manifest {
+        attributes('Built-By' : builtBy)
+    }
+}
+
+// example 6
+repositories {
+    flatDir name: 'libs', dirs: "$projectDir/libs"
+    maven { url 'https://repo.gradle.org/gradle/libs-releases' }
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.google.guava:guava:19.0'
+    testCompile 'junit:junit:4.12'
+    runtime('org.hibernate:hibernate:3.0.5') {
+        transitive = false
+    }
+}
+
+configurations.all {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        if (details.requested.name == 'log4j') {
+            details.useTarget "org.slf4j:log4j-over-slf4j:1.7.10"
+        }
+    }
+}
+
+// example 7
+buildscript {
+    repositories { maven { url 'https://plugins.gradle.org/m2/' } }
+    dependencies { classpath 'com.gradle:build-scan-plugin:1.0' }
+}
+
+apply plugin: 'com.gradle.build-scan'
+
+buildScan {
+    licenseAgreementUrl = 'https://gradle.com/terms-of-service'
+    licenseAgree = 'yes'
 }
 
