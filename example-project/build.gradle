@@ -50,7 +50,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.google.guava:guava:19.0'
+    compile 'com.google.guava:guava:18.0'
     testCompile 'junit:junit:4.12'
     runtime('org.hibernate:hibernate:3.0.5') {
         transitive = false
